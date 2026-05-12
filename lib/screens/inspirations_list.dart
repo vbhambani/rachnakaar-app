@@ -68,7 +68,7 @@ class _InspirationsListState extends State<InspirationsList> {
                     child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                       Expanded(
                         child: c.featuredImage != null
-                          ? CachedNetworkImage(imageUrl: c.featuredImage!, fit: BoxFit.cover, errorWidget: (c,u,e) => _placeholder(c.hindiName))
+                          ? CachedNetworkImage(imageUrl: c.featuredImage!, fit: BoxFit.cover, errorWidget: (_, __, ___) => _placeholder(c.hindiName.isNotEmpty ? c.hindiName : c.name))
                           : _placeholder(c.hindiName.isNotEmpty ? c.hindiName : c.name),
                       ),
                       Padding(

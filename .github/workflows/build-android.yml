@@ -24,6 +24,14 @@ jobs:
           channel: 'stable'
           cache: true
       - run: flutter create . --org com.rachnakaar --project-name rachnakaar --platforms android
+      - name: Inject INTERNET permission into release manifest
+        run: |
+          MANIFEST=android/app/src/main/AndroidManifest.xml
+          if ! grep -q "android.permission.INTERNET" "$MANIFEST"; then
+            sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET"/>\n    <application|' "$MANIFEST"
+          fi
+          echo "---manifest after patch---"
+          cat "$MANIFEST"
       - run: flutter pub get
       - run: flutter build apk --release
       - run: mkdir -p out && cp build/app/outputs/flutter-apk/app-release.apk out/rachnakaar-${{ github.run_number }}.apk
@@ -32,12 +40,13 @@ jobs:
           name: rachnakaar-apk
           path: out/rachnakaar-*.apk
           retention-days: 30
-      - uses: softprops/action-gh-release@v2
+      - name: Publish APK to GitHub Release
         if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}
-          name: Rachnakaar build ${{ github.run_number }}
-          body: "Auto-built Android APK. Install on any phone."
+          tag_name: v0.1.${{ github.run_number }}
+          name: Rachnakaar v0.1.${{ github.run_number }}
+          body: "Android build ${{ github.run_number }}. Install on any phone."
           files: out/rachnakaar-*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

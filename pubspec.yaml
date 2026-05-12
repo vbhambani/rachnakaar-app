@@ -21,5 +21,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  fonts:
-    # Using system fonts for v0.1; can switch to Playfair Display + Noto Devanagari later
